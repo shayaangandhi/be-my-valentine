@@ -26,42 +26,16 @@
         #step3 { display: none; text-align: center; width: 100vw; height: 100vh; flex-direction: column; justify-content: center; align-items: center; }
         h1 { color: #333; font-size: 2.5rem; margin-bottom: 50px; pointer-events: none; }
         
-        /* This container keeps them from overlapping the text initially */
-        .btn-row {
-            display: flex;
-            gap: 150px;
-            justify-content: center;
-            align-items: center;
-            width: 100%;
-            height: 100px;
-        }
+        .btn-row { display: flex; gap: 150px; justify-content: center; align-items: center; width: 100%; height: 100px; }
 
-        #yes-btn { 
-            padding: 15px 40px; 
-            font-size: 18px; 
-            cursor: pointer; 
-            border-radius: 8px; 
-            font-weight: 600; 
-            background-color: #ff4d6d; 
-            color: white; 
-            border: none; 
-            box-shadow: 0 4px 15px rgba(255, 77, 109, 0.3);
-            z-index: 50;
-        }
+        #yes-btn { padding: 15px 40px; font-size: 18px; cursor: pointer; border-radius: 8px; font-weight: 600; background-color: #ff4d6d; color: white; border: none; box-shadow: 0 4px 15px rgba(255, 77, 109, 0.3); z-index: 50; }
+        #no-btn { padding: 15px 40px; font-size: 18px; border-radius: 8px; font-weight: 600; background: #fff; color: #333; border: 1px solid #ccc; transition: all 0.4s ease-out; cursor: default; min-width: 100px; white-space: nowrap; z-index: 100; }
 
-        #no-btn { 
-            padding: 15px 40px; 
-            font-size: 18px; 
-            border-radius: 8px; 
-            font-weight: 600; 
-            background: #fff; 
-            color: #333; 
-            border: 1px solid #ccc;
-            transition: all 0.4s ease-out;
-            cursor: default;
-            min-width: 100px;
-            white-space: nowrap;
-            z-index: 100;
+        /* Heart Animation Styles */
+        .heart { position: fixed; font-size: 2rem; color: #ff4d6d; pointer-events: none; z-index: 200; animation: fly 3s linear forwards; }
+        @keyframes fly {
+            0% { transform: translateY(0) scale(1); opacity: 1; }
+            100% { transform: translateY(-100vh) scale(1.5) rotate(45deg); opacity: 0; }
         }
     </style>
 </head>
@@ -78,12 +52,15 @@
             Select all squares with <br><strong style="font-size: 16px;">the cutest person alive</strong>
         </div>
         <div class="grid">
+            <img src="pic1.jpg" onclick="this.classList.toggle('selected')">
+            <img src="pic2.jpg" onclick="this.classList.toggle('selected')">
+            <img src="pic3.jpg" onclick="this.classList.toggle('selected')">
+            <img src="pic4.jpg" onclick="this.classList.toggle('selected')">
             <img src="pic5.jpg" onclick="this.classList.toggle('selected')">
             <img src="pic6.jpg" onclick="this.classList.toggle('selected')">
             <img src="pic7.jpg" onclick="this.classList.toggle('selected')">
-            <img src="pic1.jpg" onclick="this.classList.toggle('selected')">
-            <img src="pic2.jpg" onclick="this.classList.toggle('selected')">
-            <img src="pic4.jpg" onclick="this.classList.toggle('selected')">
+            <img src="https://images.unsplash.com/photo-1518717758536-85ae29035b6d?w=200" onclick="this.classList.toggle('selected')">
+            <img src="https://images.unsplash.com/photo-1543852786-1cf6624b9987?w=200" onclick="this.classList.toggle('selected')">
         </div>
         <button class="verify-btn" onclick="showValentine()">Verify</button>
     </div>
@@ -91,7 +68,7 @@
     <div id="step3">
         <h1>Will you be my Valentine? ❤️</h1>
         <div class="btn-row">
-            <button id="yes-btn" onclick="alert('Yay! ❤️ Happy Valentine\'s Day!')">Yes</button>
+            <button id="yes-btn" onclick="celebrate()">Yes</button>
             <button id="no-btn">No</button>
         </div>
     </div>
@@ -110,6 +87,24 @@
             document.getElementById('step3').style.display = 'flex';
         }
 
+        function celebrate() {
+            alert('Yay! ❤️ Happy Valentine\'s Day!');
+            for (let i = 0; i < 50; i++) {
+                setTimeout(createHeart, i * 50);
+            }
+        }
+
+        function createHeart() {
+            const heart = document.createElement('div');
+            heart.classList.add('heart');
+            heart.innerHTML = '❤️';
+            heart.style.left = Math.random() * 100 + 'vw';
+            heart.style.top = '100vh';
+            heart.style.fontSize = (Math.random() * 20 + 20) + 'px';
+            document.body.appendChild(heart);
+            setTimeout(() => heart.remove(), 3000);
+        }
+
         const noBtn = document.getElementById('no-btn');
         const radius = 120; 
 
@@ -123,7 +118,6 @@
             const distance = Math.hypot(e.clientX - btnX, e.clientY - btnY);
 
             if (distance < radius) {
-                // Ensure the button becomes absolutely positioned the first time it moves
                 if (noBtn.style.position !== 'fixed') {
                     noBtn.style.position = 'fixed';
                     noBtn.style.left = rect.left + 'px';
@@ -131,11 +125,9 @@
                 }
 
                 const angle = Math.atan2(btnY - e.clientY, btnX - e.clientX);
-                
                 let newLeft = rect.left + Math.cos(angle) * 80;
                 let newTop = rect.top + Math.sin(angle) * 80;
 
-                // Stay in bounds
                 newLeft = Math.max(20, Math.min(newLeft, window.innerWidth - rect.width - 20));
                 newTop = Math.max(20, Math.min(newTop, window.innerHeight - rect.height - 20));
 
